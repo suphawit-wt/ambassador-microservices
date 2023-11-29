@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ambassador-email
+  name: ambassador-email
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ambassador-email
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ambassador-email
+    spec:
+      containers:
+        - env:
+            - name: KAFKA_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_SERVERS
+            - name: KAFKA_PROTOCOL
+              value: SASL_SSL
+            - name: KAFKA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_USERNAME
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_PASSWORD
+            - name: KAFKA_MECHANISM
+              value: PLAIN
+            - name: KAFKA_TOPIC
+              value: email_topic
+            - name: SMTP_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secrets
+                  key: SMTP_HOST
+            - name: SMTP_PORT
+              value: "2525"
+            - name: SMTP_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secrets
+                  key: SMTP_USERNAME
+            - name: SMTP_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: smtp-secrets
+                  key: SMTP_PASSWORD
+          image: region-docker.pkg.dev/project-id/ambassador-microservices/email:1.0
+          name: ambassador-email
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"

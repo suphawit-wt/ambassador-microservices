@@ -1,0 +1,93 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    io.kompose.service: ambassador-checkout
+  name: ambassador-checkout
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      io.kompose.service: ambassador-checkout
+  template:
+    metadata:
+      labels:
+        io.kompose.service: ambassador-checkout
+    spec:
+      containers:
+        - env:
+            - name: DB_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_HOST
+            - name: DB_PORT
+              value: "3306"
+            - name: DB_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_USERNAME
+            - name: DB_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: db-secrets
+                  key: DB_PASSWORD
+            - name: REDIS_HOST
+              valueFrom:
+                secretKeyRef:
+                  name: redis-secrets
+                  key: REDIS_HOST
+            - name: REDIS_PORT
+              value: "6379"
+            - name: KAFKA_SERVERS
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_SERVERS
+            - name: KAFKA_PROTOCOL
+              value: SASL_SSL
+            - name: KAFKA_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_USERNAME
+            - name: KAFKA_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: kafka-secrets
+                  key: KAFKA_PASSWORD
+            - name: KAFKA_MECHANISM
+              value: PLAIN
+            - name: KAFKA_TOPIC
+              value: email_topic
+            - name: STRIPE_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: stripe-secrets
+                  key: STRIPE_KEY
+          image: region-docker.pkg.dev/project-id/ambassador-microservices/checkout:1.0
+          name: ambassador-checkout
+          ports:
+            - containerPort: 8000
+          resources:
+            requests:
+              memory: "64Mi"
+              cpu: "250m"
+            limits:
+              memory: "128Mi"
+              cpu: "500m"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    io.kompose.service: ambassador-checkout
+  name: ambassador-checkout
+spec:
+  selector:
+    io.kompose.service: ambassador-checkout
+  ports:
+    - name: "8003"
+      port: 8003
+      targetPort: 8000
