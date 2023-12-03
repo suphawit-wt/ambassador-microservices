@@ -1,5 +1,14 @@
 # Ambassador Microservices
 
+### Tools
+- Framework: Fiber
+- Database: MySQL, Redis
+- ORM: GORM
+- Message Queue: Kafka
+- Payment: Stripe
+- CI/CD: Docker, Kubernetes
+- Authentication: JWT
+
 ## Development and Deployment
 
 ### Using Kafka Command in Docker Container
