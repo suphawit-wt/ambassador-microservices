@@ -10,7 +10,7 @@ import (
 )
 
 func main() {
-	envy.Load(".env")
+	envy.Load()
 
 	database.Connect()
 	database.AutoMigrate()

@@ -2,19 +2,20 @@ package middlewares
 
 import (
 	"ambassador/admin/utils"
+	"os"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt"
 )
 
-const SecretKey string = "secret"
+var JwtSecret string = os.Getenv("JWT_SECRET")
 
 func IsAdmin(c *fiber.Ctx) error {
 	accessTokenCookie := c.Cookies("access_token")
 
 	token, err := jwt.ParseWithClaims(accessTokenCookie, &jwt.StandardClaims{}, func(token *jwt.Token) (interface{}, error) {
-		return []byte(SecretKey), nil
+		return []byte(JwtSecret), nil
 	})
 	if err != nil || !token.Valid {
 		return c.Status(401).JSON(fiber.Map{

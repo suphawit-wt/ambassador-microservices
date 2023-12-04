@@ -162,7 +162,13 @@ func CompleteOrder(c *fiber.Ctx) error {
 
 		database.RedisClient.ZIncrBy(context.Background(), "rankings", ambassadorRevenue, user.Name())
 
-		producer, err := kafka.NewProducer(&kafka.ConfigMap{"bootstrap.servers": os.Getenv("KAFKA_SERVERS")})
+		producer, err := kafka.NewProducer(&kafka.ConfigMap{
+			"bootstrap.servers": os.Getenv("KAFKA_SERVERS"),
+			"security.protocol": os.Getenv("KAFKA_PROTOCOL"),
+			"sasl.username":     os.Getenv("KAFKA_USERNAME"),
+			"sasl.password":     os.Getenv("KAFKA_PASSWORD"),
+			"sasl.mechanism":    os.Getenv("KAFKA_MECHANISM"),
+		})
 		if err != nil {
 			panic(err)
 		}

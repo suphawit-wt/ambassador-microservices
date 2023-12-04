@@ -77,6 +77,13 @@ kubectl create secret generic stripe-secrets \
 --from-literal=STRIPE_KEY=<value>
 ```
 
+Create JWT Secrets for Deployment
+
+```bash
+kubectl create secret generic jwt-secrets \
+--from-literal=JWT_SECRET=<value>
+```
+
 Create SMTP Secrets for Deployment
 
 ```bash

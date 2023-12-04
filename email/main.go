@@ -13,7 +13,7 @@ import (
 )
 
 func main() {
-	envy.Load(".env")
+	envy.Load()
 
 	consumer, err := kafka.NewConsumer(&kafka.ConfigMap{
 		"bootstrap.servers": os.Getenv("KAFKA_SERVERS"),

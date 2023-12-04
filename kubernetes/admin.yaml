@@ -40,6 +40,11 @@ spec:
                   key: REDIS_HOST
             - name: REDIS_PORT
               value: "6379"
+            - name: JWT_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: jwt-secrets
+                  key: JWT_SECRET
           image: region-docker.pkg.dev/project-id/ambassador-microservices/admin:1.0
           name: ambassador-admin
           ports:
